@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("registration-form");
-  const table = document.getElementById("user-table").getElementsByTagName("tbody")[0];
+  const tableBody = document.getElementById("user-table-body");
+
+  // Load saved data from web storage
+  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  savedUsers.forEach(user => {
+    addUserToTable(user);
+  });
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -11,16 +17,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const dob = document.getElementById("dob").value;
     const terms = document.getElementById("terms").checked;
 
-    // Date of Birth validation
+    // Calculate age based on the entered date of birth
+    const today = new Date();
     const birthDate = new Date(dob);
-    const currentDate = new Date();
-    const minDate = new Date(currentDate);
-    minDate.setFullYear(minDate.getFullYear() - 55);
-    const maxDate = new Date(currentDate);
-    maxDate.setFullYear(maxDate.getFullYear() - 18);
+    const age = today.getFullYear() - birthDate.getFullYear();
 
-    if (birthDate < minDate || birthDate > maxDate) {
-      alert("Date of Birth must be between 18 and 55 years ago.");
+    // Display alert if age is below 18 or above 55
+    if (age < 18 || age > 55) {
+      alert("Age must be between 18 and 55.");
       return;
     }
 
@@ -37,26 +41,20 @@ document.addEventListener("DOMContentLoaded", function () {
     users.push(userData);
     localStorage.setItem("users", JSON.stringify(users));
 
+    // Add user data to the table
+    addUserToTable(userData);
+
     // Clear form fields
     form.reset();
-
-    // Update table
-    const newRow = table.insertRow();
-    newRow.insertCell().textContent = name;
-    newRow.insertCell().textContent = email;
-    newRow.insertCell().textContent = password;
-    newRow.insertCell().textContent = dob;
-    newRow.insertCell().textContent = terms ? "Accepted" : "Not Accepted";
   });
 
-  // Load saved data from web storage
-  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  savedUsers.forEach(user => {
-    const newRow = table.insertRow();
+  // Function to add user data to the table
+  function addUserToTable(user) {
+    const newRow = tableBody.insertRow();
     newRow.insertCell().textContent = user.name;
     newRow.insertCell().textContent = user.email;
     newRow.insertCell().textContent = user.password;
     newRow.insertCell().textContent = user.dob;
     newRow.insertCell().textContent = user.terms ? "Accepted" : "Not Accepted";
-  });
+  }
 });
