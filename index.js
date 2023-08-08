@@ -1,60 +1,67 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("registration-form");
-  const tableBody = document.getElementById("user-table-body");
-
-  // Load saved data from web storage
-  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  savedUsers.forEach(user => {
-    addUserToTable(user);
-  });
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const dob = document.getElementById("dob").value;
-    const terms = document.getElementById("terms").checked;
-
-    // Calculate age based on the entered date of birth
-    const today = new Date();
-    const birthDate = new Date(dob);
-    const age = today.getFullYear() - birthDate.getFullYear();
-
-    // Display alert if age is below 18 or above 55
-    if (age < 18 || age > 55) {
-      alert("Age must be between 18 and 55.");
-      return;
+let userForm = document.getElementById("user-form");
+let userEntries=[];
+const retrieveEntries = ()=>{
+    let entries = localStorage.getItem('userEntries');
+    if(entries){
+        entries=JSON.parse(entries);
+    }else{
+        entries=[];
     }
+    return entries;
+};
+const displayEntries = () => {
+  let entries = retrieveEntries();
+  const tableEntries = entries
+    .map((input) => {
+      const namedata = `<td class='border px-4 py-2'>${input.FullName}</td>`;
+      const emaildata = `<td class='border px-4 py-2'>${input.email}</td>`;
+      const passworddata = `<td class='border px-4 py-2'>${input.password}</td>`;
+      const dobdata = `<td class='border px-4 py-2'>${input.dob}</td>`;
+      const termsdata = `<td class='border px-4 py-2'>${input.terms}</td>`;
+      const row = `<tr>${namedata} ${emaildata} ${passworddata} ${dobdata} ${termsdata}</tr>`;
+      return row;
+    })
+    .join('\n');
+  const tableBody = document.querySelector('#user-entries tbody');
+  tableBody.innerHTML = tableEntries; // Add the table entries to the <tbody> element
+};
 
-    // Save data to web storage
-    const userData = {
-      name: name,
-      email: email,
-      password: password,
-      dob: dob,
-      terms: terms,
-    };
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push(userData);
-    localStorage.setItem("users", JSON.stringify(users));
+const saveUserForm = (event)=>{
+event.preventDefault();
+const FullName = document.getElementById('name').value
+const email = document.getElementById('email').value
+const password = document.getElementById('password').value
+const dob = document.getElementById('dob').value
+const terms = document.getElementById('terms').checked
+var currentYear = new Date().getFullYear();
+var birthYear = dob.split("-");
+let year=birthYear[0]
+var age = currentYear-year
+console.log({age,currentYear,birthYear});
+if(age < 18 || age > 55){
+    document.getElementById('dob')
+  return  alert("Age must be between 18 and 55")
 
-    // Add user data to the table
-    addUserToTable(userData);
+}
+else
+{
+    document.getElementById('dob')
 
-    // Clear form fields
-    form.reset();
-  });
-
-  // Function to add user data to the table
-  function addUserToTable(user) {
-    const newRow = tableBody.insertRow();
-    newRow.insertCell().textContent = user.name;
-    newRow.insertCell().textContent = user.email;
-    newRow.insertCell().textContent = user.password;
-    newRow.insertCell().textContent = user.dob;
-    newRow.insertCell().textContent = user.terms ? "Accepted" : "Not Accepted";
-  }
-});
+    const input =
+    {
+        FullName,
+        email,
+        password,
+        dob,
+        terms
+     };
+     userEntries = retrieveEntries();
+     userEntries.push(input);
+     localStorage.setItem("userEntries",JSON.stringify(userEntries));
+     displayEntries();
+     userForm.reset();
+}
+};
+userForm.addEventListener('submit',saveUserForm)
+displayEntries()
