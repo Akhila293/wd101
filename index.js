@@ -1,62 +1,72 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("registration-form");
-  const table = document.getElementById("user-table").getElementsByTagName("tbody")[0];
 
-  form.addEventListener("submit", function (event) {
+ const form = document.getElementById('registrationForm');
+const tableBody = document.getElementById('userTableBody');
+
+form.addEventListener('submit', function(event) {
     event.preventDefault();
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const dob = document.getElementById("dob").value;
-    const terms = document.getElementById("terms").checked;
-
-    // Date of Birth validation
-    const birthDate = new Date(dob);
-    const currentDate = new Date();
-    const minDate = new Date(currentDate);
-    minDate.setFullYear(minDate.getFullYear() - 55);
-    const maxDate = new Date(currentDate);
-    maxDate.setFullYear(maxDate.getFullYear() - 18);
-
-    if (birthDate < minDate || birthDate > maxDate) {
-      alert("Date of Birth must be between 18 and 55 years ago.");
-      return;
+    
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const dob = document.getElementById('dob').value;
+    const acceptedTerms = document.getElementById('acceptedTerms').checked;
+    
+    // Validate age between 18 and 55
+    const today = new Date();
+    const dobDate = new Date(dob);
+    const age = today.getFullYear() - dobDate.getFullYear();
+    if (age < 18 || age > 55) {
+        alert("Date of Birth must be between 18 and 55 years old.");
+        return;
     }
-
-    // Save data to web storage
+    
+    // Add the data to the table
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>${name}</td>
+        <td>${email}</td>
+        <td>${password}</td>
+        <td>${dob}</td>
+        <td>${acceptedTerms ? 'Yes' : 'No'}</td>
+    `;
+    tableBody.appendChild(newRow);
+    
+    // Save data to localStorage
     const userData = {
-      name: name,
-      email: email,
-      password: password,
-      dob: dob,
-      terms: terms,
+        name: name,
+        email: email,
+        password: password,
+        dob: dob,
+        acceptedTerms: acceptedTerms
     };
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push(userData);
-    localStorage.setItem("users", JSON.stringify(users));
-
+    
+    let storedData = localStorage.getItem('userData');
+    if (!storedData) {
+        storedData = [];
+    } else {
+        storedData = JSON.parse(storedData);
+    }
+    
+    storedData.push(userData);
+    localStorage.setItem('userData', JSON.stringify(storedData));
+    
     // Clear form fields
     form.reset();
-
-    // Update table
-    const newRow = table.insertRow();
-    newRow.insertCell().textContent = name;
-    newRow.insertCell().textContent = email;
-    newRow.insertCell().textContent = password;
-    newRow.insertCell().textContent = dob;
-    newRow.insertCell().textContent = terms ? "Accepted" : "Not Accepted";
-  });
-
-  // Load saved data from web storage
-  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  savedUsers.forEach(user => {
-    const newRow = table.insertRow();
-    newRow.insertCell().textContent = user.name;
-    newRow.insertCell().textContent = user.email;
-    newRow.insertCell().textContent = user.password;
-    newRow.insertCell().textContent = user.dob;
-    newRow.insertCell().textContent = user.terms ? "Accepted" : "Not Accepted";
-  });
 });
+
+// Load saved data from localStorage
+const savedUserData = localStorage.getItem('userData');
+if (savedUserData) {
+    const userDataArray = JSON.parse(savedUserData);
+    userDataArray.forEach(userData => {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${userData.name}</td>
+            <td>${userData.email}</td>
+            <td>${userData.password}</td>
+            <td>${userData.dob}</td>
+            <td>${userData.acceptedTerms ? 'Yes' : 'No'}</td>
+        `;
+        tableBody.appendChild(newRow);
+    });
+}
