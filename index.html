@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+     <style>
         table {
             width: 100%;
             border-collapse: collapse;
@@ -14,47 +18,66 @@
             padding: 8px;
             text-align: left;
         }
-    </style>
+    /* Style for the box with black margin */
+    .table-container {
+      border: 2px solid black;
+      margin: 20px;
+      padding: 20px;
+    }
+
+    /* Center align the form */
+    #registration-form {
+      text-align: center;
+    }
+
+    /* Add some space between form elements */
+    #registration-form label,
+    #registration-form input,
+    #registration-form button {
+      margin: 5px;
+    }
+  </style>
 </head>
 <body>
-    <h1>User Registration</h1>
+  <h1>Registration Form</h1>
+  <form id="registration-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
     
-    <form id="registrationForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" name="dob" required><br>
-        
-        <label for="acceptedTerms">Accepted terms?</label>
-        <input type="checkbox" id="acceptedTerms" name="acceptedTerms" required><br><br>
-        
-        <button type="submit">Register</button>
-    </form>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
     
-    <h2>Registered Users</h2>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Dob</th>
-                <th>Accepted terms?</th>
-            </tr>
-        </thead>
-        <tbody id="userTableBody">
-            <!-- Table rows will be added dynamically through JavaScript -->
-        </tbody>
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required><br><br>
+    
+    <label for="terms">Accept Terms&Conditions</label>
+    <input type="checkbox" id="terms" name="terms" required><br><br>
+    
+    <button type="submit">Register</button>
+  </form>
+  
+  <!-- Enclosing the table in a box with black margin -->
+  <div class="table-container">
+    <h2>Entries</h2>
+    <table id="user-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Password</th>
+          <th>DOB</th>
+          <th>Accepted terms?</th>
+        </tr>
+      </thead>
+      <tbody id="user-table-body">
+        <!-- User data will be added here -->
+      </tbody>
     </table>
+  </div>
 
-    <script src="index.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>
